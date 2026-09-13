@@ -1,6 +1,6 @@
 spring:
   application:
-    name: doodlex
+    name: doodle-mini
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
