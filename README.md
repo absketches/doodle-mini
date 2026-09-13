@@ -119,3 +119,16 @@ curl 'http://localhost:8080/availability?userIds=1,2&from=2030-01-10T00:00:00Z&t
 - Converting a slot into a meeting marks the slot `BUSY`.
 - A booked slot cannot be deleted.
 - Availability queries require bounded `from` and `to` parameters.
+
+
+## Limitations not able to address due to time
+
+- Slot overlap is enforced in the service layer, not as a PostgreSQL exclusion constraint. 
+Two concurrent requests could theoretically create overlapping slots unless we implement a stronger constraint or locking strategy.
+- Meeting participants are stored as email-like strings and are not linked to user accounts. Booking a meeting marks the owner’s slot busy, but it does not reserve time in participant calendars or validate participant availability.
+- Availability returns declared slots within a time frame.
+- Meeting lifecycle support is minimal. The service supports converting a slot into a meeting and fetching the meeting, but not updating meeting details, cancelling meetings, etc.
+- User management is limited. Users can be created and fetched, but there is no authentication, authorization, profile update, deletion or ownership enforcement.
+- Query APIs are bounded by `from` and `to`, but there is no pagination, maximum query window, or maximum number of requested users. For much larger datasets, those limits need to be added.
+- The API uses UTC instants only. It does not model user time zones, daylight-saving behavior, local business hours or recurring slots.
+- Test coverage focuses on core service behavior and main integration flows. More time would add tests for validation errors, concurrent booking/overlap scenarios and edge cases around large query ranges.
